@@ -1,0 +1,11 @@
+# Web Dashboard
+streamlit
+
+# Database Connection
+supabase
+
+# Data Handling
+pandas
+
+# API Requests (For the GitHub Action)
+requests
