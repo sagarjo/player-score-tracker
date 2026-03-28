@@ -8,15 +8,14 @@ SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
-# Players List from your image
+# Players List
 TARGET_PLAYERS = [
     "Virat Kohli", "Shubman Gill", "Yashasvi Jaiswal", "Abhishek Sharma", "KL Rahul",
     "Ishan Kishan", "Sanju Samson", "Shreyas Iyer", "Mitchell Marsh", "Sai Sudharsan"
 ]
 
 def get_ipl_series_id():
-    """Finds the official IPL 2026 Series ID using the search endpoint."""
-    # FIX: Corrected the endpoint URL for searching
+    #Finds the official IPL 2026 Series ID using the search endpoint.
     url = f"https://api.cricapi.com/v1/series?apikey={API_KEY}&offset=0&search=Indian Premier League 2026"
     response = requests.get(url).json()
     
