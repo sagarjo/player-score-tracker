@@ -7,6 +7,7 @@ API_KEY = os.getenv("CRICKET_API_KEY")
 SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
+IPL_2026_SERIES_ID = "87c62aac-bc3c-4738-ab93-19da0690488f"
 
 # Players List
 TARGET_PLAYERS = [
@@ -16,7 +17,8 @@ TARGET_PLAYERS = [
 
 def get_ipl_series_id():
     """Dynamically finds the official IPL 2026 Series ID."""
-    url = f"https://api.cricapi.com/v1/series?apikey={API_KEY}&offset=0&search=IPL 2026"
+    #url = f"https://api.cricapi.com/v1/series?apikey={API_KEY}&offset=0&search=IPL 2026"
+    url = f"https://api.cricapi.com/v1/series_matches?apikey={API_KEY}&id={series_id}"
     response = requests.get(url).json()
     
     if response.get("status") == "success":
