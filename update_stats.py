@@ -33,7 +33,7 @@ def fetch_and_sync():
         return
 
     # Fetching match IDs for this series
-    url = f"https://api.cricapi.com/v1/series_matches?apikey={API_KEY}&id={series_id}"
+    url = f"https://api.cricapi.com/v1/matches?apikey={API_KEY}"
     response = requests.get(url).json()
     
     if response.get("status") != "success":
@@ -42,6 +42,7 @@ def fetch_and_sync():
 
     for match in response.get("data", []):
         match_id = match["id"]
+        
         
         # Get detailed scorecard
         score_url = f"https://api.cricapi.com/v1/match_scorecard?apikey={API_KEY}&id={match_id}"
