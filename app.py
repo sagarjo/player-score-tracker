@@ -14,6 +14,10 @@ supabase = create_client(url, key)
 TEAM_MEET = ["Virat Kohli", "Shubman Gill", "Yashasvi Jaiswal", "Abhishek Sharma", "KL Rahul"]
 TEAM_PAKSHAL = ["Ishan Kishan", "Sanju Samson", "Shreyas Iyer", "Mitchell Marsh", "Sai Sudharsan"]
 
+st.set_page_config(page_title="IPL 2026 Tracker", page_icon="🏏")
+st.title("🏏 IPL 2026 Player Run Tracker")
+
+
 def get_data():
     # [span_5](start_span)[span_6](start_span)This now has access to the 'supabase' object initialized above[span_5](end_span)[span_6](end_span)
     response = supabase.table("player_runs").select("*").execute()
