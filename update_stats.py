@@ -21,8 +21,9 @@ def get_ipl_series_id():
     return None
 
 def fetch_and_sync():
-    series_id = get_ipl_series_id()
-    if not series_id: return
+    #series_id = get_ipl_series_id()
+    series_id="87c62aac-bc3c-4738-ab93-19da0690488f"
+    #if not series_id: return
 
     # Calculate yesterday's date (Format: YYYY-MM-DD)
     yesterday = (datetime.now() - timedelta(1)).strftime('%Y-%m-%d')
