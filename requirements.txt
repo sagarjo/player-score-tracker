@@ -9,3 +9,10 @@ pandas
 
 # API Requests (For the GitHub Action)
 requests
+
+#Bar Graph
+altair
+
+#File Download in xlsx
+xlsxwriter
+
