@@ -17,6 +17,17 @@ supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 IPL_2026_SERIES_ID = "87c62aac-bc3c-4738-ab93-19da0690488f"
 
 # Combined unique players from all four teams
+TARGET_PLAYERS_OLD = list(set([
+    "Shreyas Iyer", "Abhishek Sharma", "Shubman Gill", "KL Rahul", "Mitchell Marsh", 
+    "Suryakumar Yadav", "Yashasvi Jaiswal", "Jos Buttler", "Philip Salt", "Finn Allen", 
+    "Dewald Brevis", "Prabhsimran Singh", "Vaibhav Sooryavanshi", "Rishabh Pant", 
+    "Ayush Mhatre", "Heinrich Klaasen", "Nitish Rana", "Riyan Parag", "Shivam Dube", 
+    "Nehal Wadhera", "Virat Kohli", "Ishan Kishan", "Travis Head", "Sanju Samson", 
+    "Rajat Patidar", "Sai Sudharsan", "Ruturaj Gaikwad", "Aiden Markram", "Nicholas Pooran", 
+    "Rohit Sharma", "Quinton de Kock", "Priyansh Arya", "Tilak Varma", "Shimron Hetmyer", 
+    "Ajinkya Rahane", "Pathum Nissanka", "Tristan Stubbs", "Glenn Phillips", "Dhruv Jurel", "Cameron Green"
+]))
+
 TARGET_PLAYERS = list(set([
     "Shreyas Iyer", "Abhishek Sharma", "Shubman Gill", "KL Rahul", "Mitchell Marsh", 
     "Suryakumar Yadav", "Yashasvi Jaiswal", "Jos Buttler", "Philip Salt", "Finn Allen", 
@@ -27,6 +38,7 @@ TARGET_PLAYERS = list(set([
     "Rohit Sharma", "Quinton de Kock", "Priyansh Arya", "Tilak Varma", "Shimron Hetmyer", 
     "Ajinkya Rahane", "Pathum Nissanka", "Tristan Stubbs", "Glenn Phillips", "Dhruv Jurel", "Cameron Green"
 ]))
+
 
 def fetch_and_sync():
     logger.info("Starting expanded IPL sync...")
