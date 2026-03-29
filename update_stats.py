@@ -26,44 +26,47 @@ def get_ipl_series_id():
     return None
 
 def fetch_and_sync():
+    # 1. Use your existing search logic to find the Series ID
     series_id = get_ipl_series_id()
     if not series_id:
         print("IPL 2026 Series not found. Skipping sync.")
         return
 
-    # Fetching match IDs for this series
-    url = f"https://api.cricapi.com/v1/matches?apikey={API_KEY}"
+    # 2. Use the 'series_id' endpoint to get ONLY IPL 2026 matches
+    # URL structure: https://api.cricapi.com/v1/series_info?apikey=[key]&id=[series_id]
+    url = f"https://api.cricapi.com/v1/series_info?apikey={API_KEY}&id={series_id}"
     response = requests.get(url).json()
     
     if response.get("status") != "success":
         print(f"API Error: {response.get('reason')}")
         return
 
-    for match in response.get("data", []):
-        match_id = match["id"]
-        
-        
-        # Get detailed scorecard
-        score_url = f"https://api.cricapi.com/v1/match_scorecard?apikey={API_KEY}&id={match_id}"
-        score_data = requests.get(score_url).json()
-        
-        if score_data.get("status") == "success":
-            for inning in score_data["data"]["scorecard"]:
-                for batsman in inning["batting"]:
-                    p_name = batsman["content"]
-                    
-                    if any(target.lower() in p_name.lower() for target in TARGET_PLAYERS):
-                        runs = int(batsman["r"])
+    # 3. Access the specific matchList for this series
+    match_list = response.get("data", {}).get("matchList", [])
+    
+    for match in match_list:
+        # Only check scorecards for matches that have actually started
+        if match.get("matchStarted"):
+            match_id = match["id"]
+            
+            # This is the "expensive" hit (1 credit) - now restricted to IPL only
+            score_url = f"https://api.cricapi.com/v1/match_scorecard?apikey={API_KEY}&id={match_id}"
+            score_data = requests.get(score_url).json()
+            
+            if score_data.get("status") == "success":
+                for inning in score_data["data"]["scorecard"]:
+                    for batsman in inning["batting"]:
+                        p_name = batsman["content"]
                         
-                        # Upsert to Supabase
-                        supabase.table("player_runs").upsert({
-                            "player_name": p_name,
-                            "match_id": match_id,
-                            "runs": runs
-                        }, on_conflict="player_name,match_id").execute()
-                        
-                        print(f"✅ Synced {p_name}: {runs} runs")
-
-if __name__ == "__main__":
-    fetch_and_sync()
+                        # Match against Team Meet & Team Pakshal lists
+                        if any(target.lower() in p_name.lower() for target in TARGET_PLAYERS):
+                            runs = int(batsman["r"])
+                            
+                            supabase.table("player_runs").upsert({
+                                "player_name": p_name,
+                                "match_id": match_id,
+                                "runs": runs
+                            }, on_conflict="player_name,match_id").execute()
+                            
+                            print(f"✅ Synced {p_name}: {runs} runs")
     
