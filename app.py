@@ -72,7 +72,7 @@ if not df_raw.empty:
 
         st.altair_chart(bars + text, use_container_width=True)
 
-                # --- SEASON LEADERBOARD ---
+                        # --- SEASON LEADERBOARD ---
         st.subheader("🏆 Season Leaderboard: Top 10 Performers")
         
         # 1. Group by player_name to get total runs across all matches
@@ -89,32 +89,45 @@ if not df_raw.empty:
 
         player_totals['Teams'] = player_totals['player_name'].apply(get_all_teams)
         
-        # 3. Filter and Sort
-        leaderboard_display = player_totals[player_totals['Teams'] != "Other"].copy()
-        leaderboard_display = leaderboard_display.sort_values(by="runs", ascending=False).head(10).reset_index(drop=True)
-        
-        # 4. Add Medals and Format Index
-        # Start index at 1 instead of 0
-        leaderboard_display.index = leaderboard_display.index + 1
+        # 3. Create the Full Leaderboard for Export (All players)
+        full_leaderboard = player_totals[player_totals['Teams'] != "Other"].copy()
+        full_leaderboard = full_leaderboard.sort_values(by="runs", ascending=False).reset_index(drop=True)
+        full_leaderboard.index = full_leaderboard.index + 1
+        full_leaderboard.columns = ["Player Name", "Total Season Runs", "Teams"]
+
+        # 4. Create the Top 10 Display with Medals
+        top_10_display = full_leaderboard.head(10).copy()
         
         def add_medals(row):
-            # row.name is the 1-based index we just set
             if row.name == 1:
-                return f"🥇 {row['player_name']}"
+                return f"🥇 {row['Player Name']}"
             elif row.name == 2:
-                return f"🥈 {row['player_name']}"
+                return f"🥈 {row['Player Name']}"
             elif row.name == 3:
-                return f"🥉 {row['player_name']}"
-            return row['player_name']
+                return f"🥉 {row['Player Name']}"
+            return row['Player Name']
 
-        leaderboard_display['player_name'] = leaderboard_display.apply(add_medals, axis=1)
+        top_10_display['Player Name'] = top_10_display.apply(add_medals, axis=1)
         
-        # 5. Final Column Cleanup
-        leaderboard_display.columns = ["Player Name", "Total Season Runs", "Teams"]
+        # Display the Top 10 Table
+        st.table(top_10_display)
+
+        # --- EXPORT TO XLSX ---
+        st.write("---")
         
-        # Display as a table limited to top 10
-        st.table(leaderboard_display)
+        # Convert the full dataframe to an Excel file in memory
+        import io
+        buffer = io.BytesIO()
+        with pd.ExcelWriter(buffer, engine='xlsxwriter') as writer:
+            full_leaderboard.to_excel(writer, index=True, sheet_name='IPL_2026_Leaderboard')
         
+        st.download_button(
+            label="📥 Download Full Leaderboard (XLSX)",
+            data=buffer,
+            file_name=f"IPL_2026_Full_Leaderboard_{pd.Timestamp.now().strftime('%Y%m%d')}.xlsx",
+            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        )
+             
 else:
     st.info("No data found. Ensure your GitHub Action has synced the latest match scores.")
     
