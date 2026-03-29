@@ -12,7 +12,7 @@ supabase = create_client(url, key)
 TEAMS = {
     "Team Mandar": [
         "Shreyas Iyer", "Abhishek Sharma", "Shubman Gill", "KL Rahul", "Mitchell Marsh", 
-        "Suryakumar Yadav", "Yashasvi Jaiswal", "Jos Buttler", "Phil Salt", "Finn Allen", 
+        "Suryakumar Yadav", "Yashasvi Jaiswal", "Jos Buttler", "Philip Salt", "Finn Allen", 
         "Dewald Brevis", "Prabhsimran Singh", "Vaibhav Sooryavanshi", "Rishabh Pant", 
         "Ayush Mhatre", "Heinrich Klaasen", "Nitish Rana", "Riyan Parag", "Shivam Dube", "Nehal Wadhera"
     ],
