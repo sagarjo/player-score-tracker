@@ -31,7 +31,7 @@ def get_data():
     return pd.DataFrame(response.data)
 
 st.set_page_config(page_title="IPL 2026 Tracker", layout="wide")
-st.title("🏏 IPL 2026: 4-Team Cumulative Standings")
+st.title("🏏 IPL 2026: Cumulative Standings")
 
 try:
     df_raw = get_data()
