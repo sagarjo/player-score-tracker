@@ -19,7 +19,7 @@ IPL_2026_SERIES_ID = "87c62aac-bc3c-4738-ab93-19da0690488f"
 # Combined unique players from all four teams
 TARGET_PLAYERS = list(set([
     "Shreyas Iyer", "Abhishek Sharma", "Shubman Gill", "KL Rahul", "Mitchell Marsh", 
-    "Suryakumar Yadav", "Yashasvi Jaiswal", "Jos Buttler", "Phil Salt", "Finn Allen", 
+    "Suryakumar Yadav", "Yashasvi Jaiswal", "Jos Buttler", "Philip Salt", "Finn Allen", 
     "Dewald Brevis", "Prabhsimran Singh", "Vaibhav Sooryavanshi", "Rishabh Pant", 
     "Ayush Mhatre", "Heinrich Klaasen", "Nitish Rana", "Riyan Parag", "Shivam Dube", 
     "Nehal Wadhera", "Virat Kohli", "Ishan Kishan", "Travis Head", "Sanju Samson", 
