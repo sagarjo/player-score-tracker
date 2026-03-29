@@ -8,7 +8,7 @@ url = st.secrets["SUPABASE_URL"]
 key = st.secrets["SUPABASE_KEY"]
 supabase = create_client(url, key) 
 
-# --- TEAM DEFINITIONS ---
+# --- TEAM DEFINITIONS (Supports Overlapping Players) ---
 TEAMS = {
     "Team Mandar": [
         "Shreyas Iyer", "Abhishek Sharma", "Shubman Gill", "KL Rahul", "Mitchell Marsh", 
@@ -41,7 +41,7 @@ except Exception as e:
 
 if not df_raw.empty:
     # --- OVERLAPPING SCORE LOGIC ---
-    # Create a new list of records where one player run can count for multiple teams
+    # One player's runs can count for multiple teams simultaneously
     team_data = []
     for _, row in df_raw.iterrows():
         p_name = row['player_name'].lower()
@@ -52,31 +52,49 @@ if not df_raw.empty:
     df_final = pd.DataFrame(team_data)
 
     if not df_final.empty:
-        # Group and calculate cumulative totals
+        # Group and calculate cumulative totals for the chart
         chart_data = df_final.groupby("Team")["runs"].sum().reset_index()
 
         # --- ALTAIR CHART WITH LABELS ---
-        # Base bar chart
         bars = alt.Chart(chart_data).mark_bar().encode(
             x=alt.X("Team:N", sort="-y"),
             y=alt.Y("runs:Q", title="Total Runs"),
             color="Team:N"
         )
 
-        # Text labels on top of bars
         text = bars.mark_text(
             align='center',
             baseline='bottom',
-            dy=-5  # Nudge text up slightly
+            dy=-5 
         ).encode(
             text='runs:Q'
         )
 
         st.altair_chart(bars + text, use_container_width=True)
 
-        # Leaderboard
-        st.subheader("Player Contributions")
-        st.dataframe(df_raw.sort_values(by="runs", ascending=False), use_container_width=True)
+        # --- SEASON LEADERBOARD ---
+        st.subheader("Season Leaderboard: Total Player Runs")
+        
+        # Group by player to get total aggregate runs
+        player_totals = df_raw.groupby("player_name")["runs"].sum().reset_index()
+        
+        # Function to find all teams a player belongs to
+        def get_all_teams(name):
+            name_low = name.lower()
+            matched_teams = []
+            for team_name, players in TEAMS.items():
+                if any(p.lower() in name_low for p in players):
+                    matched_teams.append(team_name)
+            return ", ".join(matched_teams) if matched_teams else "Other"
+
+        player_totals['Teams'] = player_totals['player_name'].apply(get_all_teams)
+        
+        # Filter and Format
+        leaderboard_display = player_totals[player_totals['Teams'] != "Other"].copy()
+        leaderboard_display = leaderboard_display.sort_values(by="runs", ascending=False).reset_index(drop=True)
+        leaderboard_display.columns = ["Player Name", "Total Season Runs", "Teams"]
+        
+        st.table(leaderboard_display)
 else:
-    st.info("No data found in Supabase. Run the sync script to populate scores.")
+    st.info("No data found. Ensure your GitHub Action has synced the latest match scores.")
     
