@@ -67,7 +67,6 @@ def fetch_and_sync():
                                 "player_name": p_name,
                                 "match_id": match_id,
                                 "runs": runs,
-                                "last_updated": datetime.now().isoformat()
                             }, on_conflict="player_name,match_id").execute()
                             logger.info(f"✅ Synced {p_name}: {runs} runs")
 
