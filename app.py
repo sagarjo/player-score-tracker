@@ -72,13 +72,13 @@ if not df_raw.empty:
 
         st.altair_chart(bars + text, use_container_width=True)
 
-        # --- SEASON LEADERBOARD ---
-        st.subheader("Season Leaderboard: Total Player Runs")
+                # --- SEASON LEADERBOARD ---
+        st.subheader("🏆 Season Leaderboard: Top 10 Performers")
         
-        # Group by player to get total aggregate runs
+        # 1. Group by player_name to get total runs across all matches
         player_totals = df_raw.groupby("player_name")["runs"].sum().reset_index()
         
-        # Function to find all teams a player belongs to
+        # 2. Function to find all teams a player belongs to
         def get_all_teams(name):
             name_low = name.lower()
             matched_teams = []
@@ -89,12 +89,32 @@ if not df_raw.empty:
 
         player_totals['Teams'] = player_totals['player_name'].apply(get_all_teams)
         
-        # Filter and Format
+        # 3. Filter and Sort
         leaderboard_display = player_totals[player_totals['Teams'] != "Other"].copy()
-        leaderboard_display = leaderboard_display.sort_values(by="runs", ascending=False).reset_index(drop=True)
+        leaderboard_display = leaderboard_display.sort_values(by="runs", ascending=False).head(10).reset_index(drop=True)
+        
+        # 4. Add Medals and Format Index
+        # Start index at 1 instead of 0
+        leaderboard_display.index = leaderboard_display.index + 1
+        
+        def add_medals(row):
+            # row.name is the 1-based index we just set
+            if row.name == 1:
+                return f"🥇 {row['player_name']}"
+            elif row.name == 2:
+                return f"🥈 {row['player_name']}"
+            elif row.name == 3:
+                return f"🥉 {row['player_name']}"
+            return row['player_name']
+
+        leaderboard_display['player_name'] = leaderboard_display.apply(add_medals, axis=1)
+        
+        # 5. Final Column Cleanup
         leaderboard_display.columns = ["Player Name", "Total Season Runs", "Teams"]
         
+        # Display as a table limited to top 10
         st.table(leaderboard_display)
+        
 else:
     st.info("No data found. Ensure your GitHub Action has synced the latest match scores.")
     
